@@ -93,6 +93,9 @@ export default function ExerciseLibraryView({ onBack }) {
               <button onClick={() => setEditingId(null)} className="p-2 rounded-xl bg-cream-dark text-gray-500">
                 <X size={14} />
               </button>
+              <span className="px-3 py-2 rounded-xl bg-cream-dark text-xs font-semibold text-gray-400 flex items-center flex-shrink-0">
+                {ex.trackingType === 'time' ? 'Time' : 'Sets'}
+              </span>
               <button onClick={() => saveEdit(ex)} className="flex-1 bg-gray-900 text-white py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-1.5">
                 <Check size={14} /> Save
               </button>
@@ -105,6 +108,13 @@ export default function ExerciseLibraryView({ onBack }) {
               {showFlat && <p className="text-xs text-gray-400">{ex.muscleGroup}</p>}
               {ex.note && <p className="text-xs text-gray-400 italic mt-0.5 leading-tight">{ex.note}</p>}
             </div>
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${
+              ex.trackingType === 'time'
+                ? 'text-gray-500 bg-gray-100'
+                : 'text-gray-400 bg-cream-dark'
+            }`}>
+              {ex.trackingType === 'time' ? 'Time' : 'Sets'}
+            </span>
             {ex.custom && (
               <span className="text-[10px] font-medium text-pastel-blue-text bg-pastel-blue px-2 py-0.5 rounded-full flex-shrink-0">custom</span>
             )}
