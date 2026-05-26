@@ -185,4 +185,4 @@ export const DEFAULT_EXERCISE_LIBRARY = [
   { id: 'lib_qu_08',   name: 'Step Up',                 muscleGroup: 'Quads',     custom: false },
   { id: 'lib_qu_09',   name: 'Smith Squat',             muscleGroup: 'Quads',     custom: false },
   { id: 'lib_qu_10',   name: 'Wall Sit',                muscleGroup: 'Quads',     custom: false },
-]
+].map(ex => ({ trackingType: 'sets', ...ex }))

@@ -18,15 +18,23 @@ function buildSessionFromRoutine(routine, date) {
     routineId: routine.id,
     routineName: routine.name,
     saved: false,
-    exercises: (routine.exercises || []).map(ex => ({
-      exerciseId: ex.id,
-      name: ex.name,
-      muscleGroup: ex.muscleGroup,
-      note: ex.note,
-      sets: Array.isArray(ex.sets)
-        ? ex.sets.map(s => ({ reps: Number(s.reps) || 0, weight: Number(s.weight) || 0, done: false }))
-        : Array.from({ length: ex.sets || 3 }, () => ({ reps: ex.reps || 10, weight: ex.weight || 0, done: false }))
-    }))
+    exercises: (routine.exercises || []).map(ex => {
+      const isTime = ex.trackingType === 'time'
+      return {
+        exerciseId: ex.id,
+        name: ex.name,
+        muscleGroup: ex.muscleGroup,
+        note: ex.note,
+        trackingType: ex.trackingType || 'sets',
+        sets: Array.isArray(ex.sets)
+          ? ex.sets.map(s => isTime
+              ? { minutes: Number(s.minutes) || 0, seconds: Number(s.seconds) || 0, done: false }
+              : { reps: Number(s.reps) || 0, weight: Number(s.weight) || 0, done: false })
+          : isTime
+              ? Array.from({ length: ex.sets || 3 }, () => ({ minutes: 0, seconds: 0, done: false }))
+              : Array.from({ length: ex.sets || 3 }, () => ({ reps: ex.reps || 10, weight: ex.weight || 0, done: false }))
+      }
+    })
   }
 }
 
@@ -96,6 +104,10 @@ export default function LoggedWorkoutsView() {
       ...s,
       exercises: s.exercises.map((ex, ei) => {
         if (ei !== exIdx) return ex
+        if (ex.trackingType === 'time') {
+          const last = ex.sets[ex.sets.length - 1] || { minutes: 0, seconds: 0 }
+          return { ...ex, sets: [...ex.sets, { minutes: last.minutes, seconds: last.seconds, done: false }] }
+        }
         const last = ex.sets[ex.sets.length - 1] || { reps: 10, weight: 0 }
         return { ...ex, sets: [...ex.sets, { reps: last.reps, weight: last.weight, done: false }] }
       })
@@ -121,15 +133,19 @@ export default function LoggedWorkoutsView() {
   const askConfirm = (message, fn) => setConfirm({ open: true, message, onConfirm: fn })
   const closeConfirm = () => setConfirm({ open: false, message: '', onConfirm: null })
 
-  const addExercise = ({ name, muscleGroup }) => {
+  const addExercise = (ex) => {
+    const trackingType = ex.trackingType || 'sets'
     updateDraft(s => ({
       ...s,
       exercises: [...s.exercises, {
         exerciseId: uid(),
-        name,
-        muscleGroup,
-        note: '',
-        sets: [{ reps: 10, weight: 0, done: false }]
+        name: ex.name,
+        muscleGroup: ex.muscleGroup,
+        note: ex.note || '',
+        trackingType,
+        sets: [trackingType === 'time'
+          ? { minutes: 0, seconds: 0, done: false }
+          : { reps: 10, weight: 0, done: false }]
       }]
     }))
   }
@@ -168,15 +184,19 @@ export default function LoggedWorkoutsView() {
     if (routine) {
       const updatedExercises = draft.exercises.map(sex => {
         const rex = routine.exercises.find(r => r.id === sex.exerciseId)
-        const setData = sex.sets.map(s => ({ reps: Number(s.reps) || 0, weight: Number(s.weight) || 0 }))
+        const isTime = sex.trackingType === 'time'
+        const setData = sex.sets.map(s => isTime
+          ? { minutes: Number(s.minutes) || 0, seconds: Number(s.seconds) || 0 }
+          : { reps: Number(s.reps) || 0, weight: Number(s.weight) || 0 })
         if (rex) {
-          return { ...rex, sets: setData }
+          return { ...rex, trackingType: sex.trackingType || 'sets', sets: setData }
         }
         return {
           id: sex.exerciseId || uid(),
           name: sex.name,
           muscleGroup: sex.muscleGroup,
           note: sex.note || '',
+          trackingType: sex.trackingType || 'sets',
           sets: setData,
         }
       })
@@ -323,22 +343,41 @@ export default function LoggedWorkoutsView() {
                           : <Circle size={20} className="text-gray-300" />}
                       </button>
                       <span className="text-xs text-gray-500 w-10 flex-shrink-0">Set {si + 1}</span>
-                      <div className="flex items-center gap-1.5 flex-1">
-                        <input
-                          type="text" inputMode="numeric" pattern="[0-9]*"
-                          value={set.reps}
-                          onChange={e => updateSet(ei, si, 'reps', e.target.value)}
-                          className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
-                        />
-                        <span className="text-xs text-gray-400">reps ×</span>
-                        <input
-                          type="text" inputMode="numeric" pattern="[0-9]*"
-                          value={set.weight}
-                          onChange={e => updateSet(ei, si, 'weight', e.target.value)}
-                          className="w-14 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
-                        />
-                        <span className="text-xs text-gray-400">kg</span>
-                      </div>
+                      {ex.trackingType === 'time' ? (
+                        <div className="flex items-center gap-1.5 flex-1">
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.minutes || 0}
+                            onChange={e => updateSet(ei, si, 'minutes', e.target.value)}
+                            className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">min :</span>
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.seconds || 0}
+                            onChange={e => updateSet(ei, si, 'seconds', e.target.value)}
+                            className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">sec</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 flex-1">
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.reps}
+                            onChange={e => updateSet(ei, si, 'reps', e.target.value)}
+                            className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">reps ×</span>
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.weight}
+                            onChange={e => updateSet(ei, si, 'weight', e.target.value)}
+                            className="w-14 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">kg</span>
+                        </div>
+                      )}
                     </div>
                     </SwipeableSetRow>
                   ))}
@@ -470,7 +509,11 @@ export default function LoggedWorkoutsView() {
                           ? <CheckCircle2 size={18} className="text-pastel-green-text flex-shrink-0" />
                           : <Circle size={18} className="text-gray-300 flex-shrink-0" />}
                         <span className="text-xs text-gray-500 w-10 flex-shrink-0">Set {si + 1}</span>
-                        <span className="text-xs text-gray-600">{set.reps} reps × {set.weight}kg</span>
+                        <span className="text-xs text-gray-600">
+                          {ex.trackingType === 'time'
+                            ? `${set.minutes || 0} min : ${String(set.seconds || 0).padStart(2, '0')} sec`
+                            : `${set.reps} reps × ${set.weight}kg`}
+                        </span>
                       </div>
                     ))}
                   </div>

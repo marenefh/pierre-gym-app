@@ -17,6 +17,7 @@ const MIGRATION_KEY17 = 'pierre_migration_v17'
 const MIGRATION_KEY18 = 'pierre_migration_v18'
 const MIGRATION_KEY19 = 'pierre_migration_v19'
 const MIGRATION_KEY20 = 'pierre_migration_v20'
+const MIGRATION_KEY21 = 'pierre_migration_v21'
 
 export function runMigrations() {
   runV2()
@@ -36,6 +37,7 @@ export function runMigrations() {
   runV17()
   runV18()
   runV19()
+  runV21()
 }
 
 function runV2() {
@@ -983,5 +985,19 @@ function runV19() {
   }
 
   localStorage.setItem(MIGRATION_KEY19, '1')
+}
+
+function runV21() {
+  if (localStorage.getItem(MIGRATION_KEY21)) return
+  // Add trackingType: 'sets' to any existing library exercises that don't have it
+  try {
+    const raw = localStorage.getItem('pierre_exercise_library')
+    if (raw) {
+      const lib = JSON.parse(raw)
+      const updated = lib.map(ex => ex.trackingType ? ex : { ...ex, trackingType: 'sets' })
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
+    }
+  } catch (e) { /* ignore */ }
+  localStorage.setItem(MIGRATION_KEY21, '1')
 }
 

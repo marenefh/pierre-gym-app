@@ -15,7 +15,7 @@ export default function ExerciseLibraryView({ onBack }) {
   const [editingId, setEditingId] = useState(null)
   const [editDraft, setEditDraft] = useState({})
   const [addingCustom, setAddingCustom] = useState(false)
-  const [customDraft, setCustomDraft] = useState({ name: '', muscleGroup: '', note: '' })
+  const [customDraft, setCustomDraft] = useState({ name: '', muscleGroup: '', note: '', trackingType: 'sets' })
   const [confirm, setConfirm] = useState({ open: false, message: '', onConfirm: null })
   const askConfirm = (message, fn) => setConfirm({ open: true, message, onConfirm: fn })
   const closeConfirm = () => setConfirm({ open: false, message: '', onConfirm: null })
@@ -57,8 +57,8 @@ export default function ExerciseLibraryView({ onBack }) {
 
   const addCustom = () => {
     if (!customDraft.name.trim() || !customDraft.muscleGroup) return
-    setLibrary(prev => [...prev, { id: `custom_${uid()}`, name: customDraft.name.trim(), muscleGroup: customDraft.muscleGroup, note: customDraft.note.trim(), custom: true }])
-    setCustomDraft({ name: '', muscleGroup: '', note: '' })
+    setLibrary(prev => [...prev, { id: `custom_${uid()}`, name: customDraft.name.trim(), muscleGroup: customDraft.muscleGroup, note: customDraft.note.trim(), trackingType: customDraft.trackingType || 'sets', custom: true }])
+    setCustomDraft({ name: '', muscleGroup: '', note: '', trackingType: 'sets' })
     setAddingCustom(false)
   }
 
@@ -181,6 +181,20 @@ export default function ExerciseLibraryView({ onBack }) {
               <option value="" disabled>Select Muscle Group</option>
               {MUSCLE_GROUPS.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
+            <div className="flex bg-cream-dark rounded-xl p-1 gap-1">
+              {['sets', 'time'].map(t => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setCustomDraft(d => ({ ...d, trackingType: t }))}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
+                    customDraft.trackingType === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400'
+                  }`}
+                >
+                  {t === 'sets' ? 'Sets' : 'Time'}
+                </button>
+              ))}
+            </div>
             <input
               value={customDraft.note}
               onChange={e => setCustomDraft(d => ({ ...d, note: e.target.value }))}

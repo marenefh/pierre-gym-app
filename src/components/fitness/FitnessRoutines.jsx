@@ -46,8 +46,16 @@ export default function FitnessRoutines() {
     setRoutines(prev => prev.map(r => r.id === id ? { ...r, ...patch } : r))
 
   // ── Exercise CRUD ──────────────────────────────────────────────────────────
-  const handleAddExercise = ({ name, muscleGroup }) => {
-    const ex = { id: uid(), name, muscleGroup, note: '', sets: [{ reps: 10, weight: 0 }] }
+  const handleAddExercise = (picked) => {
+    const trackingType = picked.trackingType || 'sets'
+    const ex = {
+      id: uid(),
+      name: picked.name,
+      muscleGroup: picked.muscleGroup,
+      note: picked.note || '',
+      trackingType,
+      sets: [trackingType === 'time' ? { minutes: 0, seconds: 0 } : { reps: 10, weight: 0 }]
+    }
     updateRoutine(selected, { exercises: [...(routine.exercises || []), ex] })
     setAddExPickerOpen(false)
   }
@@ -70,6 +78,10 @@ export default function FitnessRoutines() {
     updateRoutine(selected, {
       exercises: routine.exercises.map(ex => {
         if (ex.id !== exId) return ex
+        if (ex.trackingType === 'time') {
+          const last = ex.sets[ex.sets.length - 1] || { minutes: 0, seconds: 0 }
+          return { ...ex, sets: [...ex.sets, { minutes: last.minutes, seconds: last.seconds }] }
+        }
         const last = ex.sets[ex.sets.length - 1] || { reps: 10, weight: 0 }
         return { ...ex, sets: [...ex.sets, { reps: last.reps, weight: last.weight }] }
       })
@@ -163,22 +175,41 @@ export default function FitnessRoutines() {
                     >
                     <div className="flex items-center gap-2.5 p-2 rounded-xl bg-cream-dark">
                       <span className="text-xs text-gray-500 w-10 flex-shrink-0">Set {si + 1}</span>
-                      <div className="flex items-center gap-1.5 flex-1">
-                        <input
-                          type="text" inputMode="numeric" pattern="[0-9]*"
-                          value={set.reps}
-                          onChange={e => updateSet(ex.id, si, 'reps', e.target.value)}
-                          className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
-                        />
-                        <span className="text-xs text-gray-400">reps ×</span>
-                        <input
-                          type="text" inputMode="numeric" pattern="[0-9]*"
-                          value={set.weight}
-                          onChange={e => updateSet(ex.id, si, 'weight', e.target.value)}
-                          className="w-14 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
-                        />
-                        <span className="text-xs text-gray-400">kg</span>
-                      </div>
+                      {ex.trackingType === 'time' ? (
+                        <div className="flex items-center gap-1.5 flex-1">
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.minutes || 0}
+                            onChange={e => updateSet(ex.id, si, 'minutes', e.target.value)}
+                            className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">min :</span>
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.seconds || 0}
+                            onChange={e => updateSet(ex.id, si, 'seconds', e.target.value)}
+                            className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">sec</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 flex-1">
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.reps}
+                            onChange={e => updateSet(ex.id, si, 'reps', e.target.value)}
+                            className="w-12 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">reps ×</span>
+                          <input
+                            type="text" inputMode="numeric" pattern="[0-9]*"
+                            value={set.weight}
+                            onChange={e => updateSet(ex.id, si, 'weight', e.target.value)}
+                            className="w-14 bg-white rounded-lg px-2 py-1 text-xs text-center text-gray-800 focus:outline-none"
+                          />
+                          <span className="text-xs text-gray-400">kg</span>
+                        </div>
+                      )}
                     </div>
                     </SwipeableSetRow>
                   ))}
