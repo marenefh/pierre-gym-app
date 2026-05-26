@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { format, parseISO } from 'date-fns'
-import { CheckCircle2, Circle, ChevronDown, ChevronLeft, ChevronRight, Save, Plus, X, RefreshCw, GripVertical } from 'lucide-react'
+import { format } from 'date-fns'
+import { CheckCircle2, Circle, ChevronDown, Save, Plus, X, RefreshCw, GripVertical } from 'lucide-react'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { STORAGE_KEYS, DEFAULT_WORKOUT_ROUTINES, DEFAULT_EXERCISE_LIBRARY } from '../../store/appStore'
 import { useDragSort } from '../../hooks/useDragSort'
@@ -9,12 +9,13 @@ import ConfirmModal from '../ConfirmModal'
 import SwipeableSetRow from '../SwipeableSetRow'
 
 const TODAY = format(new Date(), 'yyyy-MM-dd')
+const TODAY_LABEL = format(new Date(), 'EEEE, d MMMM')
 function uid() { return Math.random().toString(36).slice(2) }
 
-function buildSessionFromRoutine(routine, date) {
+function buildSessionFromRoutine(routine) {
   return {
-    id: `${date}-${routine.id}`,
-    date,
+    id: `${TODAY}-${routine.id}`,
+    date: TODAY,
     routineId: routine.id,
     routineName: routine.name,
     saved: false,
@@ -42,27 +43,18 @@ export default function FitnessToday() {
   const [routines, setRoutines] = useLocalStorage(STORAGE_KEYS.WORKOUT_ROUTINES, DEFAULT_WORKOUT_ROUTINES)
   const [library]               = useLocalStorage(STORAGE_KEYS.EXERCISE_LIBRARY, DEFAULT_EXERCISE_LIBRARY)
   const [log, setLog]           = useLocalStorage(STORAGE_KEYS.WORKOUT_LOG, [])
-  const [date, setDate]         = useState(TODAY)
   const [showPicker, setShowPicker] = useState(false)
   const [draft, setDraft]       = useState(null)
   const [exPickerOpen, setExPickerOpen] = useState(false)
 
-  const isToday = date === TODAY
-  const saved   = log.find(l => l.date === date) || null
-  const session = isToday ? (saved || draft) : saved
-
-  const shiftDate = (d) => {
-    const dt = parseISO(date)
-    dt.setDate(dt.getDate() + d)
-    const next = format(dt, 'yyyy-MM-dd')
-    if (next <= TODAY) setDate(next)
-  }
+  const saved   = log.find(l => l.date === TODAY) || null
+  const session = saved || draft
 
   // ── Draft management ───────────────────────────────────────────────────────
   const selectRoutine = (routineId) => {
     const routine = routines.find(r => r.id === routineId)
     if (!routine) return
-    setDraft(buildSessionFromRoutine(routine, TODAY))
+    setDraft(buildSessionFromRoutine(routine))
     setShowPicker(false)
   }
 
@@ -105,22 +97,6 @@ export default function FitnessToday() {
     updateDraft(s => ({ ...s, exercises: s.exercises.filter((_, ei) => ei !== exIdx) }))
   }
 
-  // ── Confirm modal ────────────────────────────────────────────────────────────
-  const [confirm, setConfirm] = useState({ open: false, message: '', onConfirm: null })
-  const askConfirm = (message, fn) => setConfirm({ open: true, message, onConfirm: fn })
-  const closeConfirm = () => setConfirm({ open: false, message: '', onConfirm: null })
-
-  const reorderExercises = useCallback((from, to) => {
-    updateDraft(s => {
-      const exs = [...s.exercises]
-      const [moved] = exs.splice(from, 1)
-      exs.splice(to, 0, moved)
-      return { ...s, exercises: exs }
-    })
-  }, [])
-
-  const { dragging, dragOver, onHandleTouchStart, onListTouchMove, onListTouchEnd } = useDragSort(reorderExercises)
-
   const removeSet = (exIdx, setIdx) => {
     updateDraft(s => ({
       ...s,
@@ -147,6 +123,22 @@ export default function FitnessToday() {
       }]
     }))
   }
+
+  // ── Confirm modal ─────────────────────────────────────────────────────────
+  const [confirm, setConfirm] = useState({ open: false, message: '', onConfirm: null })
+  const askConfirm = (message, fn) => setConfirm({ open: true, message, onConfirm: fn })
+  const closeConfirm = () => setConfirm({ open: false, message: '', onConfirm: null })
+
+  const reorderExercises = useCallback((from, to) => {
+    updateDraft(s => {
+      const exs = [...s.exercises]
+      const [moved] = exs.splice(from, 1)
+      exs.splice(to, 0, moved)
+      return { ...s, exercises: exs }
+    })
+  }, [])
+
+  const { dragging, dragOver, onHandleTouchStart, onListTouchMove, onListTouchEnd } = useDragSort(reorderExercises)
 
   const saveSession = () => {
     if (!draft) return
@@ -195,87 +187,14 @@ export default function FitnessToday() {
   const totalSets = session?.exercises?.reduce((a, ex) => a + ex.sets.length, 0) || 0
   const doneSets  = session?.exercises?.reduce((a, ex) => a + ex.sets.filter(s => s.done).length, 0) || 0
 
-  // ── Date nav header ────────────────────────────────────────────────────────
-  const DateNav = () => (
-    <div className="flex items-center justify-between px-4 py-2">
-      <button onClick={() => shiftDate(-1)} className="p-2 rounded-xl hover:bg-cream-dark">
-        <ChevronLeft size={16} className="text-gray-600" />
-      </button>
-      <span className="text-sm font-semibold text-gray-900">
-        {isToday ? 'Today' : format(parseISO(date), 'EEE, d MMMM')}
-      </span>
-      <button onClick={() => shiftDate(1)} disabled={isToday} className="p-2 rounded-xl hover:bg-cream-dark disabled:opacity-30">
-        <ChevronRight size={16} className="text-gray-600" />
-      </button>
-    </div>
-  )
-
-  // ── Past day: read-only ────────────────────────────────────────────────────
-  if (!isToday) {
+  // ── Routine picker ─────────────────────────────────────────────────────────
+  if (showPicker || !session) {
     return (
       <div className="h-full overflow-y-auto tab-content pb-safe">
-        <DateNav />
-        <div className="px-4 pb-4">
-          {!saved ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-gray-400 text-sm">No session logged</p>
-              <p className="text-gray-300 text-xs mt-1">{format(parseISO(date), 'EEEE, d MMMM')}</p>
-            </div>
-          ) : (
-            <>
-              <div className="mb-4">
-                <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{format(parseISO(date), 'EEEE, d MMMM')}</p>
-                <h2 className="text-lg font-bold text-gray-900">{saved.routineName}</h2>
-              </div>
-              <div className="bg-white rounded-2xl p-3 mb-4 shadow-card">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-medium text-gray-600">Sets completed</span>
-                  <span className="text-xs font-bold text-gray-900">{doneSets}/{totalSets}</span>
-                </div>
-                <div className="h-2 bg-cream-dark rounded-full overflow-hidden">
-                  <div className="h-full bg-gray-900 rounded-full" style={{ width: totalSets ? `${(doneSets / totalSets) * 100}%` : '0%' }} />
-                </div>
-              </div>
-              <div className="space-y-3">
-                {saved.exercises.map((ex, ei) => (
-                  <div key={ex.exerciseId || ei} className="bg-white rounded-2xl p-4 shadow-card">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900 text-sm">{ex.name}</p>
-                        <p className="text-xs text-gray-400">{ex.muscleGroup}</p>
-                        {ex.note && <p className="text-xs text-gray-400 italic mt-0.5 leading-tight">{ex.note}</p>}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      {ex.sets.map((set, si) => (
-                        <div key={si} className={`flex items-center gap-2.5 p-2 rounded-xl ${set.done ? 'bg-pastel-green' : 'bg-cream-dark'}`}>
-                          {set.done
-                            ? <CheckCircle2 size={20} className="text-pastel-green-text flex-shrink-0" />
-                            : <Circle size={20} className="text-gray-300 flex-shrink-0" />}
-                          <span className="text-xs text-gray-500 w-10 flex-shrink-0">Set {si + 1}</span>
-                          <span className="text-xs text-gray-600 flex-1">
-                            {ex.trackingType === 'time'
-                              ? `${set.minutes || 0} min : ${String(set.seconds || 0).padStart(2, '0')} sec`
-                              : `${set.reps} reps × ${set.weight}kg`}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+        <div className="px-4 pt-3 pb-2">
+          <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{TODAY_LABEL}</p>
+          <h2 className="text-base font-bold text-gray-900">Today's Workout</h2>
         </div>
-      </div>
-    )
-  }
-
-  // ── Today: routine picker ──────────────────────────────────────────────────
-  if (showPicker || (!session)) {
-    return (
-      <div className="h-full overflow-y-auto tab-content pb-safe">
-        <DateNav />
         <div className="px-4 py-1">
           {routines.length === 0 ? (
             <p className="text-gray-400 text-sm">Create routines in the Routines tab first.</p>
@@ -301,18 +220,17 @@ export default function FitnessToday() {
     )
   }
 
-  // ── Today: active or saved session ────────────────────────────────────────
+  // ── Active or saved session ────────────────────────────────────────────────
   const activeSession = saved || draft
   const isSaved = !!saved
 
   return (
     <div className="h-full overflow-y-auto tab-content pb-safe">
-      <DateNav />
       <div className="px-4 pb-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between pt-3 mb-4">
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{format(new Date(), 'EEEE, d MMMM')}</p>
+            <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{TODAY_LABEL}</p>
             <h2 className="text-lg font-bold text-gray-900">{activeSession.routineName}</h2>
           </div>
           {isSaved && <span className="text-xs font-medium text-pastel-green-text bg-pastel-green px-2.5 py-1 rounded-xl">Saved ✓</span>}
