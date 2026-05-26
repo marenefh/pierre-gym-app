@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(export PATH=\"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH\")",
+      "Bash(curl --version)",
+      "Bash(mkdir -p ~/node-install)",
+      "Bash(curl -L \"https://nodejs.org/dist/v22.14.0/node-v22.14.0-darwin-arm64.tar.gz\" -o ~/node-install/node.tar.gz)",
+      "Bash(tar -xzf node.tar.gz)",
+      "Bash(~/node-install/node-v22.14.0-darwin-arm64/bin/node --version)",
+      "Bash(~/node-install/node-v22.14.0-darwin-arm64/bin/npm --version)",
+      "Bash(export PATH=\"$HOME/node-install/node-v22.14.0-darwin-arm64/bin:$PATH\")",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(node -e ' *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(pkill -f \"vite\")",
+      "Bash(/usr/local/bin/npm run *)",
+      "Bash(/opt/homebrew/bin/npm run *)",
+      "Bash(~/.nvm/versions/node/*/bin/npm run *)",
+      "Bash(npx --yes vite build)",
+      "Read(//Users/marenholden/.nvm/versions/**)",
+      "Read(//Users/marenholden/n/**)",
+      "Read(//usr/**)",
+      "Read(//Users/marenholden/**)",
+      "Bash(export PATH=\"$PATH:/usr/local/bin:/opt/homebrew/bin\")",
+      "Bash(PATH=/Users/marenholden/node-install/node-v22.14.0-darwin-arm64/bin:__TRACKED_VAR__ npm run build)"
+    ]
+  }
+}
