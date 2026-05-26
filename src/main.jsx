@@ -1,4 +1,3 @@
-import './seed.js'
 import { runMigrations } from './migrations.js'
 runMigrations()
 import React from 'react'

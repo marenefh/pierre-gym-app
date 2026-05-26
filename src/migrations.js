@@ -1,22 +1,22 @@
-const MIGRATION_KEY  = 'maren_migration_v2'
-const MIGRATION_KEY3 = 'maren_migration_v3'
-const MIGRATION_KEY4 = 'maren_migration_v4'
-const MIGRATION_KEY5 = 'maren_migration_v5'
-const MIGRATION_KEY6 = 'maren_migration_v6'
-const MIGRATION_KEY7 = 'maren_migration_v7'
-const MIGRATION_KEY8 = 'maren_migration_v8'
-const MIGRATION_KEY9  = 'maren_migration_v9'
-const MIGRATION_KEY10 = 'maren_migration_v10'
-const MIGRATION_KEY11 = 'maren_migration_v11'
-const MIGRATION_KEY12 = 'maren_migration_v12'
-const MIGRATION_KEY13 = 'maren_migration_v13'
-const MIGRATION_KEY14 = 'maren_migration_v14'
-const MIGRATION_KEY15 = 'maren_migration_v15'
-const MIGRATION_KEY16 = 'maren_migration_v16'
-const MIGRATION_KEY17 = 'maren_migration_v17'
-const MIGRATION_KEY18 = 'maren_migration_v18'
-const MIGRATION_KEY19 = 'maren_migration_v19'
-const MIGRATION_KEY20 = 'maren_migration_v20'
+const MIGRATION_KEY  = 'pierre_migration_v2'
+const MIGRATION_KEY3 = 'pierre_migration_v3'
+const MIGRATION_KEY4 = 'pierre_migration_v4'
+const MIGRATION_KEY5 = 'pierre_migration_v5'
+const MIGRATION_KEY6 = 'pierre_migration_v6'
+const MIGRATION_KEY7 = 'pierre_migration_v7'
+const MIGRATION_KEY8 = 'pierre_migration_v8'
+const MIGRATION_KEY9  = 'pierre_migration_v9'
+const MIGRATION_KEY10 = 'pierre_migration_v10'
+const MIGRATION_KEY11 = 'pierre_migration_v11'
+const MIGRATION_KEY12 = 'pierre_migration_v12'
+const MIGRATION_KEY13 = 'pierre_migration_v13'
+const MIGRATION_KEY14 = 'pierre_migration_v14'
+const MIGRATION_KEY15 = 'pierre_migration_v15'
+const MIGRATION_KEY16 = 'pierre_migration_v16'
+const MIGRATION_KEY17 = 'pierre_migration_v17'
+const MIGRATION_KEY18 = 'pierre_migration_v18'
+const MIGRATION_KEY19 = 'pierre_migration_v19'
+const MIGRATION_KEY20 = 'pierre_migration_v20'
 
 export function runMigrations() {
   runV2()
@@ -42,7 +42,7 @@ function runV2() {
   if (localStorage.getItem(MIGRATION_KEY)) return
 
   // Rename exercises in all saved workout sessions
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -58,12 +58,12 @@ function runV2() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // Remove unwanted exercises from library
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -84,7 +84,7 @@ function runV2() {
         'Clean and Press',
       ])
       const cleaned = lib.filter(ex => !TO_DELETE.has(ex.name))
-      localStorage.setItem('maren_exercise_library', JSON.stringify(cleaned))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(cleaned))
     } catch (e) { /* ignore */ }
   }
 
@@ -95,7 +95,7 @@ function runV3() {
   if (localStorage.getItem(MIGRATION_KEY3)) return
 
   // Add Cool-Down and Back Extension to exercise library if missing
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -106,12 +106,12 @@ function runV3() {
       if (!names.has('Back Extension')) {
         lib.push({ id: 'lib_back_13', name: 'Back Extension', muscleGroup: 'Back', custom: false })
       }
-      localStorage.setItem('maren_exercise_library', JSON.stringify(lib))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(lib))
     } catch (e) { /* ignore */ }
   }
 
   // Replace Finisher → Cool-Down in Legs 1, Legs 2, Push routines
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -127,7 +127,7 @@ function runV3() {
           ),
         }
       })
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -138,7 +138,7 @@ function runV4() {
   if (localStorage.getItem(MIGRATION_KEY4)) return
 
   // Rename "Assisted Pull-Ups" → "Pull-Up" in all logged sessions
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -148,16 +148,16 @@ function runV4() {
           ex.name === 'Assisted Pull-Ups' ? { ...ex, name: 'Pull-Up', muscleGroup: 'Back' } : ex
         ),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // Remove "Assisted Pull-Ups" from exercise library
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
-      localStorage.setItem('maren_exercise_library', JSON.stringify(lib.filter(ex => ex.name !== 'Assisted Pull-Ups')))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(lib.filter(ex => ex.name !== 'Assisted Pull-Ups')))
     } catch (e) { /* ignore */ }
   }
 
@@ -170,7 +170,7 @@ function runV5() {
   const RENAMES = { 'Back Extension': 'Hyperextension', 'Hyperextensions': 'Hyperextension' }
 
   // Rename in all logged sessions (preserve sets/reps/weights)
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -181,12 +181,12 @@ function runV5() {
           return newName ? { ...ex, name: newName, muscleGroup: 'Back' } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // Fix library: remove duplicates, ensure only "Hyperextension" (Back) remains
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -199,12 +199,12 @@ function runV5() {
         // Fix muscleGroup if it was Full Body
         cleaned.forEach(e => { if (e.name === 'Hyperextension') e.muscleGroup = 'Back' })
       }
-      localStorage.setItem('maren_exercise_library', JSON.stringify(cleaned))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(cleaned))
     } catch (e) { /* ignore */ }
   }
 
   // Rename in routines
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -215,7 +215,7 @@ function runV5() {
           return newName ? { ...ex, name: newName, muscleGroup: 'Back' } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -233,7 +233,7 @@ function runV6() {
   const TO_DELETE = new Set(Object.keys(RENAMES))
 
   // Rename in all logged sessions (preserve sets/reps/weights)
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -244,21 +244,21 @@ function runV6() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // Remove deleted exercises from library
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
-      localStorage.setItem('maren_exercise_library', JSON.stringify(lib.filter(ex => !TO_DELETE.has(ex.name))))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(lib.filter(ex => !TO_DELETE.has(ex.name))))
     } catch (e) { /* ignore */ }
   }
 
   // Rename in routines
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -269,7 +269,7 @@ function runV6() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -280,7 +280,7 @@ function runV7() {
   if (localStorage.getItem(MIGRATION_KEY7)) return
 
   // Convert routine exercises from flat {sets:n, reps:n, weight:n} to {sets:[{reps,weight}]}
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -295,7 +295,7 @@ function runV7() {
           return { ...rest, sets: Array.from({ length: count }, () => ({ reps, weight })) }
         }),
       }))
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -313,7 +313,7 @@ function runV8() {
     'Cool-Down':     'stretching, hanging',
   }
 
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -322,7 +322,7 @@ function runV8() {
         // Only set if not already customised by the user
         return note && !ex.note ? { ...ex, note } : ex
       })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(updated))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -333,7 +333,7 @@ function runV9() {
   if (localStorage.getItem(MIGRATION_KEY9)) return
 
   // Add new exercises to library if missing
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -345,12 +345,12 @@ function runV9() {
         { id: 'lib_fb_14', name: 'Splits Stretching', muscleGroup: 'Full Body', custom: false },
       ]
       toAdd.forEach(ex => { if (!names.has(ex.name)) lib.push(ex) })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(lib))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(lib))
     } catch (e) { /* ignore */ }
   }
 
   // Replace restorative routine exercises
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -366,7 +366,7 @@ function runV9() {
           ],
         }
       })
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -377,7 +377,7 @@ function runV10() {
   if (localStorage.getItem(MIGRATION_KEY10)) return
 
   // Move Hip Abductor to position 2 (after Warm-Up, before Hip Thrust) in Legs 2
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -393,7 +393,7 @@ function runV10() {
         rest.splice(insertAt, 0, ha)
         return { ...r, exercises: rest }
       })
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -413,7 +413,7 @@ function runV11() {
   }
 
   // 1. Rename + clean notes in exercise library
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -423,12 +423,12 @@ function runV11() {
         if (e.name === 'Warm-Up') e = { ...e, note: 'Treadmill (10m, 5km/h, 8%), bike, walking lunges, 90/90 knees, pigeon→split, planks, bar stretching, palms/wrists' }
         return e
       })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(updated))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // 2. Rename exercises in past sessions (workout log)
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -439,7 +439,7 @@ function runV11() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -508,13 +508,13 @@ function runV11() {
   ]
 
   try {
-    const existing = localStorage.getItem('maren_workout_routines')
+    const existing = localStorage.getItem('pierre_workout_routines')
     if (existing) {
       const parsed = JSON.parse(existing)
       // Preserve any user-created routines not in the standard set
       const standardIds = new Set(['legs1','pull','legs2','push','restorative'])
       const custom = parsed.filter(r => !standardIds.has(r.id))
-      localStorage.setItem('maren_workout_routines', JSON.stringify([...NEW_ROUTINES, ...custom]))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify([...NEW_ROUTINES, ...custom]))
     }
   } catch (e) { /* ignore */ }
 
@@ -527,7 +527,7 @@ function runV12() {
   // Fix rounded weights in past sessions:
   //   Face Pull 18.1 kg → 18 kg
   //   Cable Kickback 9.1 kg → 9 kg
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -546,7 +546,7 @@ function runV12() {
           }
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -565,7 +565,7 @@ function runV14() {
   }
 
   // Rename in all logged sessions
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -576,12 +576,12 @@ function runV14() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // Fix library: rename old entries; remove duplicates that may result
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -597,12 +597,12 @@ function runV14() {
           seen.add(ex.name)
           return true
         })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(updated))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // Rename in routines too (in case any routine still uses the old names)
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -613,7 +613,7 @@ function runV14() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -648,7 +648,7 @@ function runV15() {
   ])
 
   // 1. Rename in workout log
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -659,12 +659,12 @@ function runV15() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // 2. Fix library: rename entries, then remove deleted/duplicate names
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -681,12 +681,12 @@ function runV15() {
           seen.add(ex.name)
           return true
         })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(updated))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // 3. Rename in routines
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -697,7 +697,7 @@ function runV15() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -721,7 +721,7 @@ function runV16() {
   RENAMES['Push-Up'] = 'Push Up'
 
   // 1. Rename in workout log
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -732,12 +732,12 @@ function runV16() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // 2. Fix library: rename old entries, remove duplicates
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -752,12 +752,12 @@ function runV16() {
           seen.add(ex.name)
           return true
         })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(updated))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // 3. Rename in routines
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -768,7 +768,7 @@ function runV16() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -795,7 +795,7 @@ function runV17() {
   const RENAMES = { 'Cable Fly': 'Chest Fly' }
 
   // 1. Fix library: delete unwanted entries, rename Cable Fly → Chest Fly
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -811,12 +811,12 @@ function runV17() {
           seen.add(ex.name)
           return true
         })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(updated))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // 2. Rename Cable Fly → Chest Fly in workout log (in case any session used it)
-  const logRaw = localStorage.getItem('maren_workout_log')
+  const logRaw = localStorage.getItem('pierre_workout_log')
   if (logRaw) {
     try {
       const log = JSON.parse(logRaw)
@@ -827,12 +827,12 @@ function runV17() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_log', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_log', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
   // 3. Rename Cable Fly → Chest Fly in routines too
-  const routinesRaw = localStorage.getItem('maren_workout_routines')
+  const routinesRaw = localStorage.getItem('pierre_workout_routines')
   if (routinesRaw) {
     try {
       const routines = JSON.parse(routinesRaw)
@@ -843,7 +843,7 @@ function runV17() {
           return newName ? { ...ex, name: newName } : ex
         }),
       }))
-      localStorage.setItem('maren_workout_routines', JSON.stringify(updated))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 
@@ -855,8 +855,8 @@ function runV18() {
 
   // Scan the workout log and add any exercise that is missing from the library.
   // Uses the muscleGroup stored on the logged exercise so no guessing is needed.
-  const logRaw = localStorage.getItem('maren_workout_log')
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const logRaw = localStorage.getItem('pierre_workout_log')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (!logRaw || !libRaw) {
     localStorage.setItem(MIGRATION_KEY18, '1')
     return
@@ -888,7 +888,7 @@ function runV18() {
         muscleGroup,
         custom: false,
       }))
-      localStorage.setItem('maren_exercise_library', JSON.stringify([...lib, ...newEntries]))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify([...lib, ...newEntries]))
     }
   } catch (e) { /* ignore */ }
 
@@ -954,13 +954,13 @@ function runV19() {
   ]
 
   try {
-    const routinesRaw = localStorage.getItem('maren_workout_routines')
+    const routinesRaw = localStorage.getItem('pierre_workout_routines')
     if (routinesRaw) {
       const parsed = JSON.parse(routinesRaw)
       const standardIds = new Set(['legs1', 'pull', 'legs2', 'push'])
       // Preserve restorative + any user-created custom routines
       const others = parsed.filter(r => !standardIds.has(r.id))
-      localStorage.setItem('maren_workout_routines', JSON.stringify([...NEW_ROUTINES, ...others]))
+      localStorage.setItem('pierre_workout_routines', JSON.stringify([...NEW_ROUTINES, ...others]))
     }
   } catch (e) { /* ignore */ }
 
@@ -970,7 +970,7 @@ function runV19() {
     'Lat Pulldown':   'replace with pull up asap',
   }
 
-  const libRaw = localStorage.getItem('maren_exercise_library')
+  const libRaw = localStorage.getItem('pierre_exercise_library')
   if (libRaw) {
     try {
       const lib = JSON.parse(libRaw)
@@ -978,7 +978,7 @@ function runV19() {
         const note = NOTES[ex.name]
         return note !== undefined ? { ...ex, note } : ex
       })
-      localStorage.setItem('maren_exercise_library', JSON.stringify(updated))
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
     } catch (e) { /* ignore */ }
   }
 

@@ -1,47 +1,47 @@
 export const STORAGE_KEYS = {
   // Dashboard
-  QUOTE:        'maren_quote',          // legacy single-quote (replaced by QUOTES)
-  QUOTES:       'maren_quotes',         // [{ id, type:'text'|'image', text, author, dataUrl }]
-  QUOTE_INDEX:  'maren_quote_index',
-  TODOS:        'maren_todos',
-  SLEEP_TARGET: 'maren_sleep_target',
+  QUOTE:        'pierre_quote',          // legacy single-quote (replaced by QUOTES)
+  QUOTES:       'pierre_quotes',         // [{ id, type:'text'|'image', text, author, dataUrl }]
+  QUOTE_INDEX:  'pierre_quote_index',
+  TODOS:        'pierre_todos',
+  SLEEP_TARGET: 'pierre_sleep_target',
 
   // Calendar
-  EVENTS:          'maren_events',
-  ROUTINES:        'maren_routines',
-  NOTIFICATIONS:   'maren_notifications',
-  SCHOOL_SCHEDULE: 'maren_school_schedule',
+  EVENTS:          'pierre_events',
+  ROUTINES:        'pierre_routines',
+  NOTIFICATIONS:   'pierre_notifications',
+  SCHOOL_SCHEDULE: 'pierre_school_schedule',
 
   // Fitness
-  WORKOUT_ROUTINES:  'maren_workout_routines',
-  WORKOUT_LOG:       'maren_workout_log',
-  EXERCISE_LIBRARY:  'maren_exercise_library',
+  WORKOUT_ROUTINES:  'pierre_workout_routines',
+  WORKOUT_LOG:       'pierre_workout_log',
+  EXERCISE_LIBRARY:  'pierre_exercise_library',
 
   // Food
-  RECIPES:       'maren_recipes',
-  MEAL_PREP_PLAN:'maren_meal_prep_plan',
-  GROCERY_EXTRAS:'maren_grocery_extras',
-  FOOD_LOG:      'maren_food_log',
-  CALORIE_GOAL:  'maren_calorie_goal',
+  RECIPES:       'pierre_recipes',
+  MEAL_PREP_PLAN:'pierre_meal_prep_plan',
+  GROCERY_EXTRAS:'pierre_grocery_extras',
+  FOOD_LOG:      'pierre_food_log',
+  CALORIE_GOAL:  'pierre_calorie_goal',
 
   // Wellbeing
-  HABITS_LOG:    'maren_habits_log',
-  HABITS_CONFIG: 'maren_habits_config',
-  JOURNAL_ENTRIES:'maren_journal',
-  POMODORO_SETTINGS:'maren_pomodoro',
+  HABITS_LOG:    'pierre_habits_log',
+  HABITS_CONFIG: 'pierre_habits_config',
+  JOURNAL_ENTRIES:'pierre_journal',
+  POMODORO_SETTINGS:'pierre_pomodoro',
 
   // Finances
-  TRANSACTIONS:  'maren_transactions',
+  TRANSACTIONS:  'pierre_transactions',
 
   // Weekly Reset
-  WEEKLY_GOALS:  'maren_weekly_goals',   // { 'yyyy-WW': ['goal1', ...] }
-  WEEKLY_RESET:  'maren_weekly_reset',   // { 'yyyy-WW': { done: bool } }
+  WEEKLY_GOALS:  'pierre_weekly_goals',   // { 'yyyy-WW': ['goal1', ...] }
+  WEEKLY_RESET:  'pierre_weekly_reset',   // { 'yyyy-WW': { done: bool } }
 
   // Settings
-  SETTINGS:      'maren_settings',
+  SETTINGS:      'pierre_settings',
 
   // PWA
-  INSTALL_PROMPTED: 'maren_install_prompted',
+  INSTALL_PROMPTED: 'pierre_install_prompted',
 }
 
 export const FINANCE_CATEGORIES = ['Food', 'Shopping', 'Entertainment', 'Salary', 'Other']

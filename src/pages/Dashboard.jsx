@@ -26,7 +26,7 @@ export default function Dashboard({ onStartWorkout }) {
   // ── Text quotes ─────────────────────────────────────────────────────────────
   const [quotes, setQuotes] = useLocalStorage(STORAGE_KEYS.QUOTES, NEW_QUOTES)
   const [quoteIdx, setQuoteIdx] = useLocalStorage(STORAGE_KEYS.QUOTE_INDEX, 0)
-  const [quoteVersion, setQuoteVersion] = useLocalStorage('maren_quote_version', '0')
+  const [quoteVersion, setQuoteVersion] = useLocalStorage('pierre_quote_version', '0')
 
   useEffect(() => {
     if (quoteVersion !== '3') {
@@ -37,8 +37,8 @@ export default function Dashboard({ onStartWorkout }) {
   }, []) // eslint-disable-line
 
   // ── Photos ──────────────────────────────────────────────────────────────────
-  const [photos, setPhotos] = useLocalStorage('maren_photos', [])
-  const [photoIdx, setPhotoIdx] = useLocalStorage('maren_photo_index', 0)
+  const [photos, setPhotos] = useLocalStorage('pierre_photos', [])
+  const [photoIdx, setPhotoIdx] = useLocalStorage('pierre_photo_index', 0)
 
   // ── Quote editor state ───────────────────────────────────────────────────────
   const [showQuoteLibrary, setShowQuoteLibrary] = useState(false)
