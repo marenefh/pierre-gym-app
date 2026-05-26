@@ -191,9 +191,8 @@ export default function FitnessToday() {
   if (showPicker || !session) {
     return (
       <div className="h-full overflow-y-auto tab-content pb-safe">
-        <div className="px-4 pt-3 pb-2">
-          <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{TODAY_LABEL}</p>
-          <h2 className="text-base font-bold text-gray-900">Today's Workout</h2>
+        <div className="px-4 pt-3 pb-2 text-center">
+          <h2 className="text-base font-bold text-gray-900">{TODAY_LABEL}</h2>
         </div>
         <div className="px-4 py-1">
           {routines.length === 0 ? (
