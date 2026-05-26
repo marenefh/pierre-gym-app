@@ -58,7 +58,7 @@ export default function Dashboard({ onStartWorkout }) {
   const fileRef = useRef(null)
 
   const safeQuoteIdx = Math.min(quoteIdx, Math.max(0, quotes.length - 1))
-  const activeQuote = quotes[safeQuoteIdx] || NEW_QUOTES[0]
+  const activeQuote = quotes[safeQuoteIdx] || null
 
   const safePhotoIdx = Math.min(photoIdx, Math.max(0, photos.length - 1))
   const activePhoto = photos.length > 0 ? photos[safePhotoIdx] : null
@@ -153,11 +153,17 @@ export default function Dashboard({ onStartWorkout }) {
 
         {/* Text Quote Card */}
         <div className="bg-white shadow-card rounded-3xl p-4 mb-4">
-          <p className="text-gray-700 text-sm font-medium leading-relaxed italic text-center">
-            "{activeQuote.text}"
-          </p>
-          {activeQuote.author && (
-            <p className="text-gray-400 text-xs mt-1.5 text-center">— {activeQuote.author}</p>
+          {activeQuote ? (
+            <>
+              <p className="text-gray-700 text-sm font-medium leading-relaxed italic text-center">
+                "{activeQuote.text}"
+              </p>
+              {activeQuote.author && (
+                <p className="text-gray-400 text-xs mt-1.5 text-center">— {activeQuote.author}</p>
+              )}
+            </>
+          ) : (
+            <p className="text-gray-400 text-sm text-center italic">No quotes yet — tap + to add one</p>
           )}
           <div className="flex items-center justify-end gap-1 mt-2 text-gray-400">
             <button onClick={shuffleQuote} className="p-1 hover:text-gray-600" title="Shuffle"><Shuffle size={13} /></button>
