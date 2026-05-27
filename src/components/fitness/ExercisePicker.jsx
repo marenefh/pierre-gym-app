@@ -21,12 +21,12 @@ export default function ExercisePicker({ open, onClose, library, onSelect }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', overflow: 'hidden' }}
+      style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', overflow: 'hidden', paddingTop: '80px', paddingBottom: '160px' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
         className="bg-white mx-6 w-full rounded-3xl flex flex-col overflow-hidden"
-        style={{ maxHeight: 'calc(100vh - 120px)' }}
+        style={{ maxHeight: 'calc(100dvh - 280px)' }}
       >
         <div className="px-5 pt-5 pb-3 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
@@ -75,9 +75,6 @@ export default function ExercisePicker({ open, onClose, library, onSelect }) {
                   <p className="text-sm font-medium text-gray-900 truncate">{ex.name}</p>
                   <p className="text-xs text-gray-400">{ex.muscleGroup}</p>
                 </div>
-                {ex.custom && (
-                  <span className="text-[10px] font-medium text-pastel-blue-text bg-pastel-blue px-2 py-0.5 rounded-full flex-shrink-0">custom</span>
-                )}
               </button>
             ))}
           </div>

@@ -22,11 +22,13 @@ export default function ExerciseLibraryView({ onBack }) {
 
   const query = search.trim().toLowerCase()
 
-  const visible = library.filter(ex => {
-    const matchesGroup = filterGroup === 'All' || ex.muscleGroup === filterGroup
-    const matchesSearch = !query || ex.name.toLowerCase().includes(query)
-    return matchesGroup && matchesSearch
-  })
+  const visible = library
+    .filter(ex => {
+      const matchesGroup = filterGroup === 'All' || ex.muscleGroup === filterGroup
+      const matchesSearch = !query || ex.name.toLowerCase().includes(query)
+      return matchesGroup && matchesSearch
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   // Group them when not searching/filtering
   const showFlat = query.length > 0
@@ -108,9 +110,6 @@ export default function ExerciseLibraryView({ onBack }) {
               {showFlat && <p className="text-xs text-gray-400">{ex.muscleGroup}</p>}
               {ex.note && <p className="text-xs text-gray-400 italic mt-0.5 leading-tight">{ex.note}</p>}
             </div>
-            {ex.custom && (
-              <span className="text-[10px] font-medium text-pastel-blue-text bg-pastel-blue px-2 py-0.5 rounded-full flex-shrink-0">custom</span>
-            )}
             <button onClick={() => startEdit(ex)} className="p-1.5 rounded-xl hover:bg-cream-dark text-gray-400 flex-shrink-0">
               <Edit2 size={14} />
             </button>
