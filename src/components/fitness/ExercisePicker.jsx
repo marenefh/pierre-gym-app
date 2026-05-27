@@ -21,12 +21,12 @@ export default function ExercisePicker({ open, onClose, library, onSelect }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', overflow: 'hidden', paddingTop: '80px', paddingBottom: '160px' }}
+      style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', overflow: 'hidden', paddingTop: '54px', paddingBottom: '106px' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
         className="bg-white mx-6 w-full rounded-3xl flex flex-col overflow-hidden"
-        style={{ maxHeight: 'calc(100dvh - 280px)' }}
+        style={{ maxHeight: 'calc(100dvh - 180px)' }}
       >
         <div className="px-5 pt-5 pb-3 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
