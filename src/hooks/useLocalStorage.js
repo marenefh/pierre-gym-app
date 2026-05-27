@@ -17,10 +17,11 @@ export function useLocalStorage(key, initialValue) {
   const setValue = (value) => {
     try {
       const valueToStore = value instanceof Function ? value(storedValue) : value
-      setStoredValue(valueToStore)
       window.localStorage.setItem(key, JSON.stringify(valueToStore))
+      setStoredValue(valueToStore)
     } catch (error) {
-      console.error('localStorage error:', error)
+      console.error('localStorage write failed for key:', key, error)
+      // Do NOT update React state — keeps in-memory state consistent with storage
     }
   }
 

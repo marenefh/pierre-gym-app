@@ -151,11 +151,11 @@ export const DEFAULT_EXERCISE_LIBRARY = [
   { id: 'lib_ch_06',   name: 'Push Up',                 muscleGroup: 'Chest',     custom: false },
   { id: 'lib_ch_11',   name: 'Chest Press',             muscleGroup: 'Chest',     custom: false, note: 'Neutral grip' },
   // Core
-  { id: 'lib_co_01',   name: 'Plank',                   muscleGroup: 'Core',      custom: false },
+  { id: 'lib_co_01',   name: 'Plank',                   muscleGroup: 'Core',      custom: false, trackingType: 'time' },
   { id: 'lib_co_03',   name: 'Leg Raise',               muscleGroup: 'Core',      custom: false },
   { id: 'lib_co_04',   name: 'Russian Twist',           muscleGroup: 'Core',      custom: false },
   { id: 'lib_co_07',   name: 'Hanging Leg Raise',       muscleGroup: 'Core',      custom: false },
-  { id: 'lib_co_09',   name: 'Side Plank',              muscleGroup: 'Core',      custom: false },
+  { id: 'lib_co_09',   name: 'Side Plank',              muscleGroup: 'Core',      custom: false, trackingType: 'time' },
   { id: 'lib_co_10',   name: 'Dead Bug',                muscleGroup: 'Core',      custom: false },
   { id: 'lib_co_11',   name: 'Mountain Climber',        muscleGroup: 'Core',      custom: false },
   { id: 'lib_co_12',   name: 'Ab Cruncher',             muscleGroup: 'Core',      custom: false },
@@ -184,5 +184,5 @@ export const DEFAULT_EXERCISE_LIBRARY = [
   { id: 'lib_qu_06',   name: 'Hack Squat',              muscleGroup: 'Quads',     custom: false },
   { id: 'lib_qu_08',   name: 'Step Up',                 muscleGroup: 'Quads',     custom: false },
   { id: 'lib_qu_09',   name: 'Smith Squat',             muscleGroup: 'Quads',     custom: false },
-  { id: 'lib_qu_10',   name: 'Wall Sit',                muscleGroup: 'Quads',     custom: false },
+  { id: 'lib_qu_10',   name: 'Wall Sit',                muscleGroup: 'Quads',     custom: false, trackingType: 'time' },
 ].map(ex => ({ trackingType: 'sets', ...ex }))

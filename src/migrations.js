@@ -1,3 +1,5 @@
+import { DEFAULT_EXERCISE_LIBRARY } from './store/appStore.js'
+
 const MIGRATION_KEY  = 'pierre_migration_v2'
 const MIGRATION_KEY3 = 'pierre_migration_v3'
 const MIGRATION_KEY4 = 'pierre_migration_v4'
@@ -18,6 +20,9 @@ const MIGRATION_KEY18 = 'pierre_migration_v18'
 const MIGRATION_KEY19 = 'pierre_migration_v19'
 const MIGRATION_KEY20 = 'pierre_migration_v20'
 const MIGRATION_KEY21 = 'pierre_migration_v21'
+const MIGRATION_KEY22 = 'pierre_migration_v22'
+const MIGRATION_KEY23 = 'pierre_migration_v23'
+const MIGRATION_KEY25 = 'pierre_migration_v25'
 
 export function runMigrations() {
   runV2()
@@ -38,6 +43,9 @@ export function runMigrations() {
   runV18()
   runV19()
   runV21()
+  runV22()
+  runV23()
+  runV25()
 }
 
 function runV2() {
@@ -999,5 +1007,76 @@ function runV21() {
     }
   } catch (e) { /* ignore */ }
   localStorage.setItem(MIGRATION_KEY21, '1')
+}
+
+function runV22() {
+  if (localStorage.getItem(MIGRATION_KEY22)) return
+
+  // Add Treadmill to library and switch Yoga/FoamRolling/BandStretching/SplitsStretching to time
+  try {
+    const raw = localStorage.getItem('pierre_exercise_library')
+    if (raw) {
+      const lib = JSON.parse(raw)
+      const names = new Set(lib.map(e => e.name))
+      const TIME_EXERCISES = new Set(['Yoga', 'Foam Rolling', 'Band Stretching', 'Splits Stretching'])
+      let updated = lib.map(ex =>
+        TIME_EXERCISES.has(ex.name) ? { ...ex, trackingType: 'time' } : ex
+      )
+      if (!names.has('Treadmill')) {
+        updated.push({ id: 'lib_fb_15', name: 'Treadmill', muscleGroup: 'Full Body', custom: false, note: '5kmh, 8%', trackingType: 'time' })
+      }
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
+    }
+  } catch (e) { /* ignore */ }
+
+  localStorage.setItem(MIGRATION_KEY22, '1')
+}
+
+function runV23() {
+  if (localStorage.getItem(MIGRATION_KEY23)) return
+
+  // Guard against V22 corruption: if library has fewer than 20 items, rebuild from DEFAULT
+  try {
+    const raw = localStorage.getItem('pierre_exercise_library')
+    const lib = raw ? JSON.parse(raw) : []
+    if (lib.length < 20) {
+      // Rebuild from DEFAULT_EXERCISE_LIBRARY, preserving custom exercises from broken library
+      const customExercises = lib.filter(ex => ex.custom)
+      const TIME_EXERCISES = new Set(['Yoga', 'Foam Rolling', 'Band Stretching', 'Splits Stretching'])
+      let rebuilt = DEFAULT_EXERCISE_LIBRARY.map(ex =>
+        TIME_EXERCISES.has(ex.name) ? { ...ex, trackingType: 'time' } : ex
+      )
+      // Add Treadmill if not already in DEFAULT
+      const defaultNames = new Set(rebuilt.map(e => e.name))
+      if (!defaultNames.has('Treadmill')) {
+        rebuilt.push({ id: 'lib_fb_15', name: 'Treadmill', muscleGroup: 'Full Body', custom: false, note: '5kmh, 8%', trackingType: 'time' })
+      }
+      // Append any custom exercises that aren't already there
+      const rebuiltNames = new Set(rebuilt.map(e => e.name))
+      customExercises.forEach(ex => { if (!rebuiltNames.has(ex.name)) rebuilt.push(ex) })
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(rebuilt))
+    }
+  } catch (e) { /* ignore */ }
+
+  localStorage.setItem(MIGRATION_KEY23, '1')
+}
+
+function runV25() {
+  if (localStorage.getItem(MIGRATION_KEY25)) return
+
+  // Change Plank, Side Plank, Wall Sit to trackingType: 'time'
+  try {
+    const raw = localStorage.getItem('pierre_exercise_library')
+    if (raw) {
+      const lib = JSON.parse(raw)
+      const TIME_NOW = new Set(['Plank', 'Side Plank', 'Wall Sit'])
+      const updated = lib.map(ex =>
+        TIME_NOW.has(ex.name) ? { ...ex, trackingType: 'time' } : ex
+      )
+      localStorage.setItem('pierre_exercise_library', JSON.stringify(updated))
+    }
+  } catch (e) { /* ignore */ }
+
+  localStorage.setItem(MIGRATION_KEY25, '1')
 }
 
