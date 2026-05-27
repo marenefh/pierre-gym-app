@@ -6,7 +6,7 @@ import ConfirmModal from '../ConfirmModal'
 
 function uid() { return Math.random().toString(36).slice(2) }
 
-const GROUP_ORDER = ['Back', 'Biceps', 'Triceps', 'Shoulders', 'Chest', 'Core', 'Full Body', 'Glutes', 'Hamstrings', 'Quads']
+const GROUP_ORDER = ['Back', 'Biceps', 'Triceps', 'Shoulders', 'Chest', 'Core', 'Full Body', 'Glutes', 'Hamstrings', 'Quads', 'Calves']
 
 export default function ExerciseLibraryView({ onBack }) {
   const [library, setLibrary] = useLocalStorage(STORAGE_KEYS.EXERCISE_LIBRARY, DEFAULT_EXERCISE_LIBRARY)

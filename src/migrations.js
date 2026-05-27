@@ -23,6 +23,7 @@ const MIGRATION_KEY21 = 'pierre_migration_v21'
 const MIGRATION_KEY22 = 'pierre_migration_v22'
 const MIGRATION_KEY23 = 'pierre_migration_v23'
 const MIGRATION_KEY25 = 'pierre_migration_v25'
+const MIGRATION_KEY26 = 'pierre_migration_v26'
 
 export function runMigrations() {
   runV2()
@@ -46,6 +47,7 @@ export function runMigrations() {
   runV22()
   runV23()
   runV25()
+  runV26()
 }
 
 function runV2() {
@@ -1078,5 +1080,22 @@ function runV25() {
   } catch (e) { /* ignore */ }
 
   localStorage.setItem(MIGRATION_KEY25, '1')
+}
+
+function runV26() {
+  if (localStorage.getItem(MIGRATION_KEY26)) return
+
+  // Replace the entire exercise library with the new Pierre-specific library.
+  // Any custom exercises the user added are preserved.
+  try {
+    const raw = localStorage.getItem('pierre_exercise_library')
+    const existing = raw ? JSON.parse(raw) : []
+    const customExercises = existing.filter(ex => ex.custom)
+    const customNames = new Set(customExercises.map(ex => ex.name))
+    const base = DEFAULT_EXERCISE_LIBRARY.filter(ex => !customNames.has(ex.name))
+    localStorage.setItem('pierre_exercise_library', JSON.stringify([...base, ...customExercises]))
+  } catch (e) { /* ignore */ }
+
+  localStorage.setItem(MIGRATION_KEY26, '1')
 }
 

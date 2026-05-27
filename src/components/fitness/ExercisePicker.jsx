@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { X, Search } from 'lucide-react'
 
-const GROUP_ORDER = ['Back', 'Biceps', 'Triceps', 'Shoulders', 'Chest', 'Core', 'Full Body', 'Glutes', 'Hamstrings', 'Quads']
+const GROUP_ORDER = ['Back', 'Biceps', 'Triceps', 'Shoulders', 'Chest', 'Core', 'Full Body', 'Glutes', 'Hamstrings', 'Quads', 'Calves']
 
 export default function ExercisePicker({ open, onClose, library, onSelect }) {
   const [search, setSearch] = useState('')
